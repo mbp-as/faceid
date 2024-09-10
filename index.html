@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face ID Authentication</title>
+</head>
+<body>
+    <h1>Login with Face ID</h1>
+    <button id="loginBtn">Login using Face ID</button>
+    
+    <script>
+        async function loginWithFaceID() {
+            if (!window.PublicKeyCredential) {
+                alert("Web Authentication API не підтримується вашим браузером.");
+                return;
+            }
+
+            try {
+                // Створюємо запит на аутентифікацію
+                const options = {
+                    publicKey: {
+                        challenge: new Uint8Array(32), // Використовуйте справжній challenge з сервера
+                        allowCredentials: [{
+                            id: new Uint8Array(16), // Тут потрібно вставити справжній ідентифікатор користувача
+                            type: "public-key"
+                        }],
+                        timeout: 60000,
+                        userVerification: "required"
+                    }
+                };
+
+                // Викликаємо API для перевірки особи через Face ID
+                const assertion = await navigator.credentials.get(options);
+
+                // Обробка результату аутентифікації
+                console.log("Аутентифікація успішна", assertion);
+
+                // Далі потрібно відправити дані на сервер для перевірки
+                // Наприклад, використайте fetch() для надсилання на сервер:
+                // fetch('/login', { method: 'POST', body: JSON.stringify(assertion) });
+                
+            } catch (err) {
+                console.error("Помилка аутентифікації:", err);
+                alert("Не вдалося пройти аутентифікацію.");
+            }
+        }
+
+        document.getElementById("loginBtn").addEventListener("click", loginWithFaceID);
+    </script>
+</body>
+</html>

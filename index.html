@@ -3,50 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face ID Authentication</title>
+    <title>Face ID Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #accountInfo {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login with Face ID</h1>
-    <button id="loginBtn">Login using Face ID</button>
-    
+    <h1>Face ID Test</h1>
+    <button id="testFaceIDBtn">Тест фейсу</button>
+
+    <div id="accountInfo" style="display: none;">
+        <h2>Обліковий запис створено:</h2>
+        <p><strong>ID користувача:</strong> <span id="userId"></span></p>
+        <p><strong>Тип ключа:</strong> <span id="keyType"></span></p>
+    </div>
+
     <script>
-        async function loginWithFaceID() {
+        async function createAccountWithFaceID() {
             if (!window.PublicKeyCredential) {
                 alert("Web Authentication API не підтримується вашим браузером.");
                 return;
             }
 
             try {
-                // Створюємо запит на аутентифікацію
+                // Створюємо запит на створення облікового запису
                 const options = {
                     publicKey: {
-                        challenge: new Uint8Array(32), // Використовуйте справжній challenge з сервера
-                        allowCredentials: [{
-                            id: new Uint8Array(16), // Тут потрібно вставити справжній ідентифікатор користувача
-                            type: "public-key"
+                        challenge: new Uint8Array(32), // Симуляція запиту на підтвердження
+                        rp: {
+                            name: "Test App"
+                        },
+                        user: {
+                            id: new Uint8Array(16), // Випадковий ID користувача
+                            name: "testuser@example.com",
+                            displayName: "Test User"
+                        },
+                        pubKeyCredParams: [{
+                            type: "public-key",
+                            alg: -7 // Алгоритм ECDSA з SHA-256
                         }],
                         timeout: 60000,
-                        userVerification: "required"
+                        attestation: "direct",
+                        authenticatorSelection: {
+                            userVerification: "required"
+                        }
                     }
                 };
 
-                // Викликаємо API для перевірки особи через Face ID
-                const assertion = await navigator.credentials.get(options);
+                // Викликаємо API для створення облікового запису з Face ID
+                const credential = await navigator.credentials.create(options);
 
-                // Обробка результату аутентифікації
-                console.log("Аутентифікація успішна", assertion);
+                // Відображаємо інформацію про створений обліковий запис
+                document.getElementById("userId").textContent = credential.id;
+                document.getElementById("keyType").textContent = credential.type;
+                document.getElementById("accountInfo").style.display = "block";
 
-                // Далі потрібно відправити дані на сервер для перевірки
-                // Наприклад, використайте fetch() для надсилання на сервер:
-                // fetch('/login', { method: 'POST', body: JSON.stringify(assertion) });
-                
+                console.log("Обліковий запис створено", credential);
             } catch (err) {
-                console.error("Помилка аутентифікації:", err);
-                alert("Не вдалося пройти аутентифікацію.");
+                console.error("Помилка створення облікового запису:", err);
+                alert("Не вдалося створити обліковий запис.");
             }
         }
 
-        document.getElementById("loginBtn").addEventListener("click", loginWithFaceID);
+        document.getElementById("testFaceIDBtn").addEventListener("click", createAccountWithFaceID);
     </script>
 </body>
 </html>

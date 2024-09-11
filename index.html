@@ -15,11 +15,18 @@
             border: 1px solid #ccc;
             background-color: #f9f9f9;
         }
+        #authResult {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #e9ffe9;
+        }
     </style>
 </head>
 <body>
     <h1>Face ID Test</h1>
-    <button id="testFaceIDBtn">Тест фейсу</button>
+    <button id="testFaceIDBtn">Тест фейсу (Створити обліковий запис)</button>
+    <button id="authFaceIDBtn" style="margin-left: 10px;">Аутентифікація через фейс айді</button>
 
     <div id="accountInfo" style="display: none;">
         <h2>Обліковий запис створено:</h2>
@@ -27,7 +34,13 @@
         <p><strong>Тип ключа:</strong> <span id="keyType"></span></p>
     </div>
 
+    <div id="authResult" style="display: none;">
+        <h2>Результат аутентифікації:</h2>
+        <p><span id="authStatus"></span></p>
+    </div>
+
     <script>
+        // Створення облікового запису через Face ID
         async function createAccountWithFaceID() {
             if (!window.PublicKeyCredential) {
                 alert("Web Authentication API не підтримується вашим браузером.");
@@ -35,7 +48,6 @@
             }
 
             try {
-                // Створюємо запит на створення облікового запису
                 const options = {
                     publicKey: {
                         challenge: new Uint8Array(32), // Симуляція запиту на підтвердження
@@ -59,10 +71,9 @@
                     }
                 };
 
-                // Викликаємо API для створення облікового запису з Face ID
                 const credential = await navigator.credentials.create(options);
 
-                // Відображаємо інформацію про створений обліковий запис
+                // Відображення інформації про створений обліковий запис
                 document.getElementById("userId").textContent = credential.id;
                 document.getElementById("keyType").textContent = credential.type;
                 document.getElementById("accountInfo").style.display = "block";
@@ -74,7 +85,42 @@
             }
         }
 
+        // Аутентифікація через Face ID
+        async function authenticateWithFaceID() {
+            if (!window.PublicKeyCredential) {
+                alert("Web Authentication API не підтримується вашим браузером.");
+                return;
+            }
+
+            try {
+                const options = {
+                    publicKey: {
+                        challenge: new Uint8Array(32), // Симуляція виклику аутентифікації
+                        allowCredentials: [{
+                            id: new Uint8Array(16), // Випадковий ідентифікатор користувача (в реальному світі це було б збережено)
+                            type: "public-key"
+                        }],
+                        timeout: 60000,
+                        userVerification: "required"
+                    }
+                };
+
+                const assertion = await navigator.credentials.get(options);
+
+                // Відображення результату аутентифікації
+                document.getElementById("authStatus").textContent = "Аутентифікація успішна! ID: " + assertion.id;
+                document.getElementById("authResult").style.display = "block";
+
+                console.log("Аутентифікація успішна", assertion);
+            } catch (err) {
+                console.error("Помилка аутентифікації:", err);
+                document.getElementById("authStatus").textContent = "Помилка аутентифікації.";
+                document.getElementById("authResult").style.display = "block";
+            }
+        }
+
         document.getElementById("testFaceIDBtn").addEventListener("click", createAccountWithFaceID);
+        document.getElementById("authFaceIDBtn").addEventListener("click", authenticateWithFaceID);
     </script>
 </body>
 </html>

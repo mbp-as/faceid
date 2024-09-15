@@ -18,11 +18,12 @@
         input {
             width: 100%;
             max-width: 400px;
-            padding: 10px;
+            padding: 15px 20px;
             margin: 10px 0;
-            border: 2px solid black;
-            border-radius: 8px;
             font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid black;
+            box-sizing: border-box;
         }
 
         button {
@@ -41,7 +42,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            display: none; /* Приховано за замовчуванням */
         }
 
         button img {
@@ -63,16 +63,15 @@
         #accountInfo h2 {
             margin-top: 0;
         }
-
     </style>
 </head>
 <body>
     <h1>Бажаєте створити обліковий запис?</h1>
 
-    <input type="text" id="name" placeholder="Введіть ваше ім'я">
-    <input type="email" id="email" placeholder="Введіть ваш email">
+    <input type="text" id="nameInput" placeholder="Ім'я">
+    <input type="email" id="emailInput" placeholder="Email">
 
-    <button id="testFaceIDBtn">
+    <button id="testFaceIDBtn" style="display: none;">
         <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
         Вхід з Apple
     </button>
@@ -84,21 +83,21 @@
     </div>
 
     <script>
-        const nameInput = document.getElementById("name");
-        const emailInput = document.getElementById("email");
-        const faceIDBtn = document.getElementById("testFaceIDBtn");
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        const testFaceIDBtn = document.getElementById('testFaceIDBtn');
 
-        // Показуємо кнопку лише після введення ім'я та email
-        nameInput.addEventListener("input", toggleButton);
-        emailInput.addEventListener("input", toggleButton);
-
-        function toggleButton() {
+        // Показуємо кнопку, коли обидва поля заповнені
+        function checkInputs() {
             if (nameInput.value && emailInput.value) {
-                faceIDBtn.style.display = "flex"; // Показуємо кнопку
+                testFaceIDBtn.style.display = 'flex'; // Відображаємо кнопку
             } else {
-                faceIDBtn.style.display = "none"; // Приховуємо кнопку
+                testFaceIDBtn.style.display = 'none'; // Ховаємо кнопку
             }
         }
+
+        nameInput.addEventListener('input', checkInputs);
+        emailInput.addEventListener('input', checkInputs);
 
         // Створення облікового запису через Face ID
         async function createAccountWithFaceID() {
@@ -110,14 +109,14 @@
             try {
                 const options = {
                     publicKey: {
-                        challenge: new Uint8Array(32), // Симуляція запиту на підтвердження
+                        challenge: new Uint8Array(32),
                         rp: {
                             name: "Test App"
                         },
                         user: {
-                            id: new Uint8Array(16), // Випадковий ID користувача
-                            name: emailInput.value, // Використовуємо введений email
-                            displayName: nameInput.value // Використовуємо введене ім'я
+                            id: new Uint8Array(16),
+                            name: emailInput.value,
+                            displayName: nameInput.value
                         },
                         pubKeyCredParams: [{
                             type: "public-key",
@@ -133,7 +132,6 @@
 
                 const credential = await navigator.credentials.create(options);
 
-                // Відображення інформації про створений обліковий запис
                 document.getElementById("userId").textContent = credential.id;
                 document.getElementById("keyType").textContent = credential.type;
                 document.getElementById("accountInfo").style.display = "block";
@@ -145,7 +143,7 @@
             }
         }
 
-        faceIDBtn.addEventListener("click", createAccountWithFaceID);
+        testFaceIDBtn.addEventListener('click', createAccountWithFaceID);
     </script>
 </body>
 </html>

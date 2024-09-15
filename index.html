@@ -15,6 +15,16 @@
             margin-bottom: 30px;
         }
 
+        input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid black;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
         button {
             background-color: black;
             color: white;
@@ -31,6 +41,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            display: none; /* Приховано за замовчуванням */
         }
 
         button img {
@@ -58,6 +69,9 @@
 <body>
     <h1>Бажаєте створити обліковий запис?</h1>
 
+    <input type="text" id="name" placeholder="Введіть ваше ім'я">
+    <input type="email" id="email" placeholder="Введіть ваш email">
+
     <button id="testFaceIDBtn">
         <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
         Вхід з Apple
@@ -70,6 +84,22 @@
     </div>
 
     <script>
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const faceIDBtn = document.getElementById("testFaceIDBtn");
+
+        // Показуємо кнопку лише після введення ім'я та email
+        nameInput.addEventListener("input", toggleButton);
+        emailInput.addEventListener("input", toggleButton);
+
+        function toggleButton() {
+            if (nameInput.value && emailInput.value) {
+                faceIDBtn.style.display = "flex"; // Показуємо кнопку
+            } else {
+                faceIDBtn.style.display = "none"; // Приховуємо кнопку
+            }
+        }
+
         // Створення облікового запису через Face ID
         async function createAccountWithFaceID() {
             if (!window.PublicKeyCredential) {
@@ -86,8 +116,8 @@
                         },
                         user: {
                             id: new Uint8Array(16), // Випадковий ID користувача
-                            name: "testuser@example.com",
-                            displayName: "Test User"
+                            name: emailInput.value, // Використовуємо введений email
+                            displayName: nameInput.value // Використовуємо введене ім'я
                         },
                         pubKeyCredParams: [{
                             type: "public-key",
@@ -115,7 +145,7 @@
             }
         }
 
-        document.getElementById("testFaceIDBtn").addEventListener("click", createAccountWithFaceID);
+        faceIDBtn.addEventListener("click", createAccountWithFaceID);
     </script>
 </body>
 </html>

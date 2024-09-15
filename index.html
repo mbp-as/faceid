@@ -26,8 +26,16 @@
             margin: 10px 0;
             width: 100%;
             max-width: 400px;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+        }
+
+        button img {
+            margin-right: 10px;
+            height: 24px;
+            width: 24px;
         }
 
         button:hover {
@@ -53,7 +61,10 @@
 <body>
     <h1>Face ID Test</h1>
 
-    <button id="testFaceIDBtn">Тест фейсу (Створити обліковий запис)</button>
+    <button id="testFaceIDBtn">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Logo">
+        Тест фейсу (Створити обліковий запис)
+    </button>
 
     <div id="accountInfo" style="display: none;">
         <h2>Обліковий запис створено:</h2>

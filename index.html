@@ -27,14 +27,14 @@
         }
 
         button {
-            background-color: black;
+            background-color: grey;
             color: white;
             border: none;
             padding: 15px 20px;
             font-size: 16px;
             font-weight: bold;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: not-allowed;
             margin: 10px 0;
             width: 100%;
             max-width: 400px;
@@ -42,6 +42,13 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            opacity: 0.6;
+        }
+
+        button.active {
+            background-color: black;
+            cursor: pointer;
+            opacity: 1;
         }
 
         button img {
@@ -71,7 +78,7 @@
     <input type="text" id="nameInput" placeholder="Ім'я">
     <input type="email" id="emailInput" placeholder="Email">
 
-    <button id="testFaceIDBtn" style="display: none;">
+    <button id="testFaceIDBtn" disabled>
         <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
         Вхід з Apple
     </button>
@@ -87,12 +94,14 @@
         const emailInput = document.getElementById('emailInput');
         const testFaceIDBtn = document.getElementById('testFaceIDBtn');
 
-        // Показуємо кнопку, коли обидва поля заповнені
+        // Перевіряємо, чи обидва поля заповнені
         function checkInputs() {
             if (nameInput.value && emailInput.value) {
-                testFaceIDBtn.style.display = 'flex'; // Відображаємо кнопку
+                testFaceIDBtn.classList.add('active');
+                testFaceIDBtn.removeAttribute('disabled');
             } else {
-                testFaceIDBtn.style.display = 'none'; // Ховаємо кнопку
+                testFaceIDBtn.classList.remove('active');
+                testFaceIDBtn.setAttribute('disabled', true);
             }
         }
 
@@ -143,7 +152,11 @@
             }
         }
 
-        testFaceIDBtn.addEventListener('click', createAccountWithFaceID);
+        testFaceIDBtn.addEventListener('click', function() {
+            if (testFaceIDBtn.classList.contains('active')) {
+                createAccountWithFaceID();
+            }
+        });
     </script>
 </body>
 </html>

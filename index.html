@@ -27,14 +27,14 @@
         }
 
         button {
-            background-color: grey;
+            background-color: black;
             color: white;
             border: none;
             padding: 15px 20px;
             font-size: 16px;
             font-weight: bold;
             border-radius: 8px;
-            cursor: not-allowed;
+            cursor: pointer;
             margin: 10px 0;
             width: 100%;
             max-width: 400px;
@@ -42,13 +42,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            opacity: 0.6;
-        }
-
-        button.active {
-            background-color: black;
-            cursor: pointer;
-            opacity: 1;
         }
 
         button img {
@@ -83,8 +76,8 @@
         Вхід з Apple
     </button>
 
-    <button id="testApplePayBtn" disabled>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
+    <button id="testApplePayBtn">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Apple_Pay_logo.svg" alt="Apple Pay Logo">
         Тестування Apple Pay
     </button>
 
@@ -98,22 +91,15 @@
         const nameInput = document.getElementById('nameInput');
         const emailInput = document.getElementById('emailInput');
         const testFaceIDBtn = document.getElementById('testFaceIDBtn');
-        const testApplePayBtn = document.getElementById('testApplePayBtn');
 
         // Перевіряємо, чи обидва поля заповнені
         function checkInputs() {
             if (nameInput.value && emailInput.value) {
                 testFaceIDBtn.classList.add('active');
                 testFaceIDBtn.removeAttribute('disabled');
-
-                testApplePayBtn.classList.add('active');
-                testApplePayBtn.removeAttribute('disabled');
             } else {
                 testFaceIDBtn.classList.remove('active');
                 testFaceIDBtn.setAttribute('disabled', true);
-
-                testApplePayBtn.classList.remove('active');
-                testApplePayBtn.setAttribute('disabled', true);
             }
         }
 
@@ -182,16 +168,14 @@
                 merchantCapabilities: ['supports3DS']
             };
 
-            const session = new ApplePaySession(1, paymentRequest);
+            const session = new ApplePaySession(3, paymentRequest);
 
             session.onvalidatemerchant = (event) => {
-                // Симуляція відповіді на валідацію
-                session.completeMerchantValidation({});
+                session.completeMerchantValidation({}); // Завершення валідації
             };
 
             session.onpaymentauthorized = (event) => {
-                // Завершення транзакції
-                session.completePayment(ApplePaySession.STATUS_SUCCESS);
+                session.completePayment(ApplePaySession.STATUS_SUCCESS); // Успішна оплата
                 alert('Оплата через Apple Pay успішна!');
             };
 
@@ -205,9 +189,7 @@
         });
 
         testApplePayBtn.addEventListener('click', function() {
-            if (testApplePayBtn.classList.contains('active')) {
-                testApplePay();
-            }
+            testApplePay();
         });
     </script>
 </body>

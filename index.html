@@ -50,6 +50,11 @@
             width: 24px;
         }
 
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         #accountInfo {
             margin-top: 20px;
             padding: 15px;
@@ -77,7 +82,7 @@
     </button>
 
     <button id="testApplePayBtn">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Font_Awesome_5_brands_cc-apple-pay.svg" alt="Apple Pay Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_Pay_logo.svg" alt="Apple Pay Logo">
         Тестування Apple Pay
     </button>
 
@@ -95,10 +100,8 @@
         // Перевіряємо, чи обидва поля заповнені
         function checkInputs() {
             if (nameInput.value && emailInput.value) {
-                testFaceIDBtn.classList.add('active');
                 testFaceIDBtn.removeAttribute('disabled');
             } else {
-                testFaceIDBtn.classList.remove('active');
                 testFaceIDBtn.setAttribute('disabled', true);
             }
         }
@@ -187,7 +190,7 @@
         }
 
         testFaceIDBtn.addEventListener('click', function() {
-            if (testFaceIDBtn.classList.contains('active')) {
+            if (!testFaceIDBtn.hasAttribute('disabled')) {
                 createAccountWithFaceID();
             }
         });
